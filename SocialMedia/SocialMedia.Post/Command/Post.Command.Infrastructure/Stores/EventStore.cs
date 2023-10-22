@@ -2,16 +2,19 @@ using Post.Command.Domain;
 using SocialMedia.Core.Events;
 using SocialMedia.Core.Exceptions;
 using SocialMedia.Core.Infrastructure;
+using SocialMedia.Core.Producers;
 
 namespace Post.Command.Infrastructure.Stores;
 
 public class EventStore : IEventStore
 {
     private readonly IEventStoreRepository _eventStoreRepository;
+    private readonly IEventProducer _eventProducer;
 
-    public EventStore(IEventStoreRepository eventStoreRepository)
+    public EventStore(IEventStoreRepository eventStoreRepository, IEventProducer eventProducer)
     {
         _eventStoreRepository = eventStoreRepository;
+        _eventProducer = eventProducer;
     }
     
     public async Task SaveEventsAsync(Guid aggregateId, IEnumerable<BaseEvent> events, int expectedVersion)
@@ -39,6 +42,9 @@ public class EventStore : IEventStore
             };
 
             await _eventStoreRepository.SaveAsync(eventModel);
+
+            var topic = Environment.GetEnvironmentVariable("SocialMediaPostEvent");
+            await _eventProducer.ProduceAsync(topic!, @event);
         }
     }
 

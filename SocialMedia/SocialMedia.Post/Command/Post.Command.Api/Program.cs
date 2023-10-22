@@ -1,12 +1,15 @@
+using Confluent.Kafka;
 using Post.Command.Api.Commands;
 using Post.Command.Domain;
 using Post.Command.Infrastructure.Config;
 using Post.Command.Infrastructure.Dispatchers;
 using Post.Command.Infrastructure.Handlers;
+using Post.Command.Infrastructure.Producers;
 using Post.Command.Infrastructure.Repositories;
 using Post.Command.Infrastructure.Stores;
 using SocialMedia.Core.Handlers;
 using SocialMedia.Core.Infrastructure;
+using SocialMedia.Core.Producers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<MongoDbConfig>(builder.Configuration.GetSection(nameof(MongoDbConfig)));
+builder.Services.Configure<ProducerConfig>(builder.Configuration.GetSection(nameof(ProducerConfig)));
+builder.Services.AddScoped<IEventProducer, EventProducer>();
 builder.Services.AddScoped<IEventStoreRepository, EventStoreRepository>();
 builder.Services.AddScoped<IEventStore, EventStore>();
 builder.Services.AddScoped<IEventSourcingHandler<PostAggregate>, EventSourcingHandler>();
