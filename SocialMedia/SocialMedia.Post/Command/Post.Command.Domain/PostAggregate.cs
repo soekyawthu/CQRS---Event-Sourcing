@@ -17,7 +17,7 @@ public class PostAggregate : AggregateRoot
     public PostAggregate()
     {
     }
-
+  
     /* Create Post */
     public PostAggregate(Guid id, string author, string text)
     {
@@ -38,22 +38,22 @@ public class PostAggregate : AggregateRoot
     }
     
     /* Edit Post */
-    public void EditMessage(string message)
+    public void EditPost(string text)
     {
         if (!_active)
         {
             throw new InvalidOperationException("You cannot edit the message of an inactive post!");
         }
 
-        if (string.IsNullOrWhiteSpace(message))
+        if (string.IsNullOrWhiteSpace(text))
         {
-            throw new InvalidOperationException($"The value of {nameof(message)} cannot be null or empty. Please provide a valid {nameof(message)}!");
+            throw new InvalidOperationException($"The value of {nameof(text)} cannot be null or empty. Please provide a valid {nameof(text)}!");
         }
 
         RaiseEvent(new PostEditedEvent
         {
             Id = _id,
-            Text = message
+            Text = text
         });
     }
 
