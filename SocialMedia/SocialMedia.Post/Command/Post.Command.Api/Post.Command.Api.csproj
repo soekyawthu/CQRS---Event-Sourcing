@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\SocialMedia.Core\SocialMedia.Core.csproj" />
       <ProjectReference Include="..\Post.Command.Infrastructure\Post.Command.Infrastructure.csproj" />
     </ItemGroup>
 
