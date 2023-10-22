@@ -4,11 +4,11 @@ namespace Post.Common.Events;
 
 public class CommentAddedEvent : BaseEvent
 {
-    protected CommentAddedEvent() : base(nameof(CommentAddedEvent))
+    public CommentAddedEvent() : base(nameof(CommentAddedEvent))
     {
     }
     
-    public required string CommentId { get; set; }
+    public required Guid CommentId { get; set; }
     public required string Comment { get; set; }
     public required string Username { get; set; }
     public DateTime CreateAt { get; set; }
