@@ -25,6 +25,8 @@ public class EventConsumer : IEventConsumer
             .SetKeyDeserializer(Deserializers.Utf8)
             .SetValueDeserializer(Deserializers.Utf8)
             .Build();
+        
+        consumer.Subscribe(topic);
 
         while (true)
         {
