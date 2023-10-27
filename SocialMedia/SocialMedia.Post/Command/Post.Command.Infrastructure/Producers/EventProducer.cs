@@ -17,6 +17,8 @@ public class EventProducer : IEventProducer
     
     public async Task ProduceAsync(string topic, BaseEvent @event)
     {
+        //_producerConfig.Acks = Acks.All;
+        
         using var producer = new ProducerBuilder<string, string>(_producerConfig)
             .SetKeySerializer(Serializers.Utf8)
             .SetValueSerializer(Serializers.Utf8)

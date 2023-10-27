@@ -24,6 +24,7 @@ public class PostController : ControllerBase
         var id = Guid.NewGuid();
         try
         {
+            command.Id = id;
             await _dispatcher.SendAsync(command);
             return Created(nameof(NewPost), new NewPostResponse
             {

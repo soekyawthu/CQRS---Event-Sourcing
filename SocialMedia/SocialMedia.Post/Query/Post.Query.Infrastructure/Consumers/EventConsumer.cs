@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Confluent.Kafka;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Post.Query.Infrastructure.Converters;
 using Post.Query.Infrastructure.Handlers;
@@ -10,11 +11,13 @@ namespace Post.Query.Infrastructure.Consumers;
 
 public class EventConsumer : IEventConsumer
 {
+    private readonly ILogger<EventConsumer> _logger;
     private readonly IEventHandler _eventHandler;
     private readonly ConsumerConfig _consumerConfig;
     
-    public EventConsumer(IOptions<ConsumerConfig> options, IEventHandler eventHandler)
+    public EventConsumer(ILogger<EventConsumer> logger, IOptions<ConsumerConfig> options, IEventHandler eventHandler)
     {
+        _logger = logger;
         _eventHandler = eventHandler;
         _consumerConfig = options.Value;
     }
@@ -33,6 +36,7 @@ public class EventConsumer : IEventConsumer
             var consumeResult = consumer.Consume();
             if (consumeResult is null) continue;
             
+            _logger.LogInformation("Consumer consumed");
             var options = new JsonSerializerOptions { Converters = { new EventJsonConverter() } };
             var @event = JsonSerializer.Deserialize<BaseEvent>(consumeResult.Message.Value, options);
 
@@ -49,6 +53,7 @@ public class EventConsumer : IEventConsumer
             }
             
             handlerMethod.Invoke(_eventHandler, new object?[] { @event });
+            consumer.Commit(consumeResult);
         }
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Post.Common.Events;
 using Post.Query.Domain.Entities;
 using Post.Query.Domain.Repositories;
@@ -6,17 +7,20 @@ namespace Post.Query.Infrastructure.Handlers;
 
 public class EventHandler : IEventHandler
 {
+    private readonly ILogger<EventHandler> _logger;
     private readonly IPostRepository _postRepository;
     private readonly ICommentRepository _commentRepository;
 
-    public EventHandler(IPostRepository postRepository, ICommentRepository commentRepository)
+    public EventHandler(ILogger<EventHandler> logger, IPostRepository postRepository, ICommentRepository commentRepository)
     {
+        _logger = logger;
         _postRepository = postRepository;
         _commentRepository = commentRepository;
     }
     
     public async Task On(PostCreatedEvent @event)
     {
+        _logger.LogInformation("OnPostCreated => {Id}, {Author}, {Text}, {CreateAt}", @event.Id, @event.Author, @event.Text, @event.CreateAt);
         await _postRepository.CreateAsync(new PostEntity
         {
             PostId = @event.Id,

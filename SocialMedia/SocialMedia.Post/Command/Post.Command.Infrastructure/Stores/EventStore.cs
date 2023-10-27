@@ -41,10 +41,11 @@ public class EventStore : IEventStore
                 EventData = @event
             };
 
-            await _eventStoreRepository.SaveAsync(eventModel);
+            //await _eventStoreRepository.SaveAsync(eventModel);
 
-            var topic = Environment.GetEnvironmentVariable("SocialMediaPostEvent");
-            await _eventProducer.ProduceAsync(topic!, @event);
+            //var topic = Environment.GetEnvironmentVariable("SocialMediaPostEvent");
+            var topic = "SocialMediaPostEvent";
+            await _eventProducer.ProduceAsync(topic, @event);
         }
     }
 
