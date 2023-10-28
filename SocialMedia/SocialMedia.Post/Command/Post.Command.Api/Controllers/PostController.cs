@@ -77,7 +77,38 @@ public class PostController : ControllerBase
         {
             const string errorMessage = "Error while processing request to update post";
             _logger.LogError(e, errorMessage);
-            return StatusCode(StatusCodes.Status500InternalServerError, new NewPostResponse
+            return StatusCode(StatusCodes.Status500InternalServerError, new BaseResponse
+            {
+                Message = errorMessage
+            });
+        }
+    }
+    
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> RemovePost(Guid id, DeletePostCommand command)
+    {
+        command.Id = id;
+        try
+        {
+            await _dispatcher.SendAsync(command);
+            return Created(nameof(NewPost), new BaseResponse
+            {
+                Message = "Successfully deleted post"
+            });
+        }
+        catch (InvalidOperationException e)
+        {
+            _logger.LogWarning(e, "Client made a bad request");
+            return BadRequest(new BaseResponse
+            {
+                Message = e.Message
+            });
+        }
+        catch (Exception e)
+        {
+            const string errorMessage = "Error while processing request to delete post";
+            _logger.LogError(e, errorMessage);
+            return StatusCode(StatusCodes.Status500InternalServerError, new BaseResponse
             {
                 Message = errorMessage
             });
