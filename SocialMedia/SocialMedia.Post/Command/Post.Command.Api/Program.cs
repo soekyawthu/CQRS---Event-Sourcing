@@ -1,4 +1,5 @@
 using Confluent.Kafka;
+using MongoDB.Bson.Serialization;
 using Post.Command.Api.Commands;
 using Post.Command.Domain;
 using Post.Command.Infrastructure.Config;
@@ -7,6 +8,8 @@ using Post.Command.Infrastructure.Handlers;
 using Post.Command.Infrastructure.Producers;
 using Post.Command.Infrastructure.Repositories;
 using Post.Command.Infrastructure.Stores;
+using Post.Common.Events;
+using SocialMedia.Core.Events;
 using SocialMedia.Core.Handlers;
 using SocialMedia.Core.Infrastructure;
 using SocialMedia.Core.Producers;
@@ -36,6 +39,15 @@ commandDispatcher.RegisterHandler<EditCommentCommand>(commandHandler.HandleAsync
 commandDispatcher.RegisterHandler<RemoveCommentCommand>(commandHandler.HandleAsync);
 commandDispatcher.RegisterHandler<LikePostCommand>(commandHandler.HandleAsync);
 builder.Services.AddSingleton<ICommandDispatcher>(_ => commandDispatcher);
+
+BsonClassMap.RegisterClassMap<BaseEvent>();
+BsonClassMap.RegisterClassMap<PostCreatedEvent>();
+BsonClassMap.RegisterClassMap<PostEditedEvent>();
+BsonClassMap.RegisterClassMap<PostRemovedEvent>();
+BsonClassMap.RegisterClassMap<CommentAddedEvent>();
+BsonClassMap.RegisterClassMap<CommentEditedEvent>();
+BsonClassMap.RegisterClassMap<CommentRemovedEvent>();
+BsonClassMap.RegisterClassMap<PostLikedEvent>();
 
 var app = builder.Build();
 

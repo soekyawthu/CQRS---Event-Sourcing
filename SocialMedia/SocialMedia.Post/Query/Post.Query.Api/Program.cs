@@ -18,7 +18,7 @@ Action<DbContextOptionsBuilder> configureDbContext =
     x => x.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
 
 builder.Services.AddDbContext<PostDbContext>(configureDbContext);
-builder.Services.AddSingleton<PostDbContextFactory>(new PostDbContextFactory(configureDbContext));
+builder.Services.AddSingleton(new PostDbContextFactory(configureDbContext));
 builder.Services.Configure<ConsumerConfig>(builder.Configuration.GetSection(nameof(ConsumerConfig)));
 
 builder.Services.AddScoped<IPostRepository, PostRepository>();
